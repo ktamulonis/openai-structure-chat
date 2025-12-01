@@ -1,0 +1,79 @@
+<div class="flex gap-6" 
+     data-controller="schema-fields"
+     data-schema-fields-reorder-url="<%= reorder_structured_schema_fields_path(@structured_schema) %>"
+     data-schema-fields-schema-json="<%= @structured_schema.to_json_schema.to_json %>"
+>
+  <!-- Left Column: Fields -->
+  <div class="w-2/3">
+    <h1 class="text-2xl font-bold mb-4">
+      <%= @structured_schema.name %> — Fields
+    </h1>
+
+    <div data-schema-fields-target="list">
+      <%= render @structured_schema.structured_fields %>
+    </div>
+
+    <hr class="my-6">
+
+    <!-- Add Field Form -->
+    <%= form_with model: [@structured_schema, StructuredField.new],
+                  data: { controller: "new-field" },
+                  local: false do |f| %>
+
+      <div class="grid grid-cols-6 gap-4 items-end">
+
+        <div class="col-span-2">
+          <%= f.label :key %>
+          <%= f.text_field :key, class: "w-full text-black p-1 rounded" %>
+        </div>
+
+        <div class="col-span-2">
+          <%= f.label :data_type %>
+          <%= f.select :data_type,
+              StructuredField::DATA_TYPES,
+              {},
+              class: "w-full text-black p-1 rounded",
+              data: { "new-field-target": "typeSelect", action: "change->new-field#updateFieldOptions" } %>
+        </div>
+
+        <div class="col-span-2">
+          <%= f.label :required %>
+          <%= f.check_box :required %>
+        </div>
+
+        <div class="col-span-2 hidden" data-new-field-target="itemType">
+          <%= f.label :item_type %>
+          <%= f.select :item_type,
+              StructuredField::PRIMITIVE_TYPES,
+              {},
+              class: "w-full text-black p-1 rounded" %>
+        </div>
+
+        <div class="col-span-4 hidden" data-new-field-target="enumValues">
+          <%= f.label :enum_values %>
+          <%= f.text_field :enum_values, placeholder: "comma,separated,values",
+                class: "w-full text-black p-1 rounded" %>
+        </div>
+
+        <div class="col-span-6">
+          <%= f.label :description %>
+          <%= f.text_field :description, class: "w-full text-black p-1 rounded" %>
+        </div>
+
+        <div class="col-span-6">
+          <%= f.submit "Add Field", class: "bg-blue-600 text-white px-3 py-2 rounded" %>
+        </div>
+      </div>
+
+    <% end %>
+  </div>
+
+  <!-- Right Column: Live JSON Schema Preview -->
+  <div class="w-1/3">
+    <h2 class="text-xl font-bold mb-2">JSON Schema Preview</h2>
+
+    <pre class="bg-gray-900 text-green-300 p-3 rounded text-xs overflow-auto h-[75vh]"
+         data-schema-fields-target="preview"></pre>
+  </div>
+</div>
+

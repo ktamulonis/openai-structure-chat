@@ -1,0 +1,52 @@
+<h1 class="text-xl font-bold mb-4"><%= @structured_schema.name %></h1>
+
+<p class="text-sm text-gray-400 mb-2">
+  OpenAI name: <code><%= @structured_schema.openai_name %></code><br>
+  Model: <code><%= @structured_schema.model %></code>
+</p>
+
+<h2 class="text-lg font-semibold mt-4 mb-2">Fields</h2>
+
+<table class="min-w-full text-sm text-left text-gray-300">
+  <thead>
+    <tr>
+      <th class="px-2 py-1">Key</th>
+      <th class="px-2 py-1">Type</th>
+      <th class="px-2 py-1">Required?</th>
+      <th class="px-2 py-1">Item Type</th>
+      <th class="px-2 py-1">Enum Values</th>
+    </tr>
+  </thead>
+  <tbody>
+    <% @structured_schema.structured_fields.each do |field| %>
+      <tr>
+        <td class="px-2 py-1"><code><%= field.key %></code></td>
+        <td class="px-2 py-1"><%= field.data_type %></td>
+        <td class="px-2 py-1"><%= field.required? ? "yes" : "no" %></td>
+        <td class="px-2 py-1"><%= field.item_type %></td>
+        <td class="px-2 py-1"><%= field.enum_values %></td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
+
+<hr class="my-4">
+
+<h2 class="text-lg font-semibold mb-2">Try this schema</h2>
+
+<%= form_with url: run_structured_schema_path(@structured_schema), method: :post, local: true do |f| %>
+  <div class="mb-2">
+    <%= f.label :prompt, "Prompt", class: "block text-sm mb-1" %>
+    <%= f.text_area :prompt, rows: 3, class: "w-full text-black p-2 rounded" %>
+  </div>
+  <%= f.submit "Run with OpenAI", class: "px-3 py-2 bg-blue-600 text-white rounded" %>
+<% end %>
+
+<% if defined?(@parsed) && @parsed.present? %>
+  <h3 class="text-lg font-semibold mt-4">Parsed result (Ruby Hash)</h3>
+  <pre class="bg-gray-900 text-green-200 p-2 rounded text-xs"><%= JSON.pretty_generate(@parsed) %></pre>
+
+  <h3 class="text-lg font-semibold mt-4">Raw JSON text from model</h3>
+  <pre class="bg-gray-900 text-yellow-200 p-2 rounded text-xs"><%= @json_text %></pre>
+<% end %>
+

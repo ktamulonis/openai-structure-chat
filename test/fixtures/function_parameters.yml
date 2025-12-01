@@ -1,0 +1,11 @@
+# Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  appchat_function: one
+  name: MyString
+  example_value: MyString
+
+two:
+  appchat_function: two
+  name: MyString
+  example_value: MyString

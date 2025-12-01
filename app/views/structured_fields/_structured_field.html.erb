@@ -1,0 +1,36 @@
+<div class="flex items-center justify-between p-2 bg-gray-800 rounded mb-2"
+     data-id="<%= structured_field.id %>">
+
+  <div>
+    <span class="font-semibold"><%= structured_field.key %></span>
+    <span class="text-gray-400">(<%= structured_field.data_type %>)</span>
+
+    <% if structured_field.data_type == "array" %>
+      <span class="text-gray-500 ml-2">items: <%= structured_field.item_type %></span>
+    <% end %>
+
+    <% if structured_field.data_type == "enum" %>
+      <span class="text-gray-500 ml-2">enum: <%= structured_field.enum_values %></span>
+    <% end %>
+
+    <% unless structured_field.required? %>
+      <span class="text-yellow-400 ml-2">optional</span>
+    <% end %>
+
+    <% if structured_field.description.present? %>
+      <div class="text-gray-400 text-xs"><%= structured_field.description %></div>
+    <% end %>
+  </div>
+
+  <div class="flex items-center gap-2">
+    <div class="cursor-move drag-handle text-gray-300">☰</div>
+
+    <%= button_to [structured_field.structured_schema, structured_field],
+                  method: :delete,
+                  data: { turbo_confirm: "Delete this field?" },
+                  class: "text-red-400 text-sm" do %>
+      ✖
+    <% end %>
+  </div>
+</div>
+

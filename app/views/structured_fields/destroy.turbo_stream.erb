@@ -1,0 +1,8 @@
+<turbo-stream action="remove" target="<%= dom_id(@field) %>"></turbo-stream>
+
+<turbo-stream action="replace" target="schema-fields-preview">
+  <template>
+    <pre><%= JSON.pretty_generate(@schema.to_json_schema) %></pre>
+  </template>
+</turbo-stream>
+

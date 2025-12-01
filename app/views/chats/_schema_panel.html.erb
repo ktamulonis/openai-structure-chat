@@ -1,0 +1,60 @@
+<%# Schema panel shown at the top of the chat view %>
+
+<%# Guard: if chat is nil OR has no schema %>
+<% if chat.present? && chat.structured_schema.present? %>
+  <% schema = chat.structured_schema %>
+
+  <div class="flex justify-between items-start">
+    <div>
+      <h2 class="text-xl font-semibold"><%= schema.name %></h2>
+      <% if schema.description.present? %>
+        <p class="text-sm text-gray-400"><%= schema.description %></p>
+      <% end %>
+
+      <h3 class="text-lg mt-3 mb-1 font-medium">Fields:</h3>
+      <ul class="text-sm ml-2">
+        <% schema.structured_fields.each do |f| %>
+          <li class="mb-1">
+            <strong><%= f.key %></strong>
+            <span class="text-gray-400">
+              (<%= f.data_type %><%= ", req" if f.required? %>)
+            </span>
+
+            <% if f.data_type == "enum" %>
+              <span class="text-gray-500 ml-1">
+                [<%= f.enum_values %>]
+              </span>
+            <% end %>
+
+            <% if f.data_type == "array" %>
+              <span class="text-gray-500 ml-1">
+                → items: <%= f.item_type %>
+              </span>
+            <% end %>
+          </li>
+        <% end %>
+      </ul>
+    </div>
+
+    <!-- Edit button -->
+    <%= link_to "Edit Schema",
+      edit_fields_structured_schema_path(chat.structured_schema, chat_id: chat.id),
+      data: { turbo_frame: "modal" },
+      class: "px-3 py-1 bg-gray-700 hover:bg-gray-600 rounded-lg text-sm" %>
+  </div>
+
+<% else %>
+
+  <div class="text-gray-400">
+    <p>No schema selected for this chat.</p>
+
+    <% if chat.present? %>
+      <%= link_to "Select Schema",
+        edit_schema_chat_path(chat),
+        data: { turbo_frame: "modal" },
+        class: "underline" %>
+    <% end %>
+  </div>
+
+<% end %>
+

@@ -1,0 +1,94 @@
+<%= turbo_frame_tag "modal" do %>
+  <div class="modal-inner bg-gray-800 text-gray-100 p-6 rounded shadow-xl w-full max-w-2xl mx-auto">
+    
+    <h2 class="text-xl font-bold mb-4">Edit Schema Fields</h2>
+
+    <%= form_with url: update_fields_structured_schema_path(@structured_schema),
+                  method: :patch,
+                  data: { turbo_frame: "modal" } do |f| %>
+
+      <% @fields.each do |field| %>
+        <div class="mb-4 p-3 bg-gray-700 rounded">
+          <%= hidden_field_tag :chat_id, params[:chat_id] %>
+          <label class="block text-sm mb-1">Key</label>
+          <input type="text" name="fields[<%= field.id %>][key]" value="<%= field.key %>"
+                 class="w-full p-1 rounded bg-gray-600 text-gray-100">
+
+          <label class="block text-sm mt-2 mb-1">Type</label>
+          <select name="fields[<%= field.id %>][data_type]"
+                  class="w-full p-1 rounded bg-gray-600 text-gray-100">
+            <% ["string","integer","float","boolean","enum","array","object"].each do |t| %>
+              <option value="<%= t %>" <%= "selected" if field.data_type == t %>><%= t %></option>
+            <% end %>
+          </select>
+
+          <% if field.data_type == "enum" %>
+            <label class="block text-sm mt-2 mb-1">Enum Values (comma-separated)</label>
+            <input type="text" name="fields[<%= field.id %>][enum_values]"
+                   value="<%= field.enum_values %>"
+                   class="w-full p-1 rounded bg-gray-600 text-gray-100">
+          <% end %>
+
+          <% if field.data_type == "array" %>
+            <label class="block text-sm mt-2 mb-1">Item Type</label>
+            <input type="text" name="fields[<%= field.id %>][item_type]"
+                   value="<%= field.item_type %>"
+                   class="w-full p-1 rounded bg-gray-600 text-gray-100">
+          <% end %>
+
+          <div class="mt-2">
+            <label class="inline-flex items-center">
+              <input type="checkbox" name="fields[<%= field.id %>][required]" value="1"
+                     <%= "checked" if field.required? %> />
+              <span class="ml-2">Required</span>
+            </label>
+          </div>
+        </div>
+      <% end %>
+
+      <h3 class="text-lg font-semibold mt-6 mb-2">Add New Field</h3>
+
+      <div class="p-3 bg-gray-700 rounded">
+        <input type="text" name="new_field[key]" placeholder="New field key"
+               class="w-full p-1 rounded bg-gray-600 text-gray-100 mb-2">
+
+        <label class="block text-sm mb-1">Type</label>
+        <select name="new_field[data_type]"
+                class="w-full p-1 rounded bg-gray-600 text-gray-100 mb-2">
+          <% ["string","integer","float","boolean","enum","array","object"].each do |t| %>
+            <option value="<%= t %>"><%= t %></option>
+          <% end %>
+        </select>
+
+        <label class="block text-sm mb-1">Enum Values</label>
+        <input type="text" name="new_field[enum_values]"
+               class="w-full p-1 rounded bg-gray-600 text-gray-100 mb-2">
+
+        <label class="block text-sm mb-1">Item Type (for array)</label>
+        <input type="text" name="new_field[item_type]"
+               class="w-full p-1 rounded bg-gray-600 text-gray-100 mb-2">
+
+        <label class="inline-flex items-center mt-2">
+          <input type="checkbox" name="new_field[required]" value="1" />
+          <span class="ml-2">Required</span>
+        </label>
+      </div>
+
+      <div class="flex justify-between mt-6">
+        <button type="button"
+                data-action="modal#close"
+                class="px-4 py-2 bg-gray-600 hover:bg-gray-500 rounded-lg">
+          Cancel
+        </button>
+
+        <button type="submit"
+                class="px-4 py-2 bg-blue-600 hover:bg-blue-500 rounded-lg">
+          Save Changes
+        </button>
+      </div>
+
+    <% end %>
+
+  </div>
+<% end %>
+

@@ -1,0 +1,12 @@
+<turbo-stream action="append" target="schema-fields-list">
+  <template>
+    <%= render @field %>
+  </template>
+</turbo-stream>
+
+<turbo-stream action="replace" target="schema-fields-preview">
+  <template>
+    <pre><%= JSON.pretty_generate(@schema.to_json_schema) %></pre>
+  </template>
+</turbo-stream>
+

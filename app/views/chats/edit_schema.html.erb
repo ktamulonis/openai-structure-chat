@@ -1,0 +1,33 @@
+<turbo-frame id="modal">
+  <div class="fixed inset-0 bg-black/50 flex items-center justify-center p-4">
+    <div class="bg-gray-800 text-gray-100 rounded-lg p-6 w-full max-w-lg">
+      <h2 class="text-xl font-bold mb-4">Edit Schema</h2>
+
+      <%= form_with model: @chat,
+                    url: chat_schema_path(@chat),
+                    method: :patch,
+                    data: { turbo_frame: "modal" } do |f| %>
+
+        <div class="mb-4">
+          <%= f.label :structured_schema_id, "Schema", class: "block mb-1 text-gray-300" %>
+          <%= f.select :structured_schema_id,
+                @schemas.map { |s| [s.name, s.id] },
+                {},
+                class: "bg-gray-700 text-gray-100 rounded p-2 w-full" %>
+        </div>
+
+        <div class="flex justify-end gap-2">
+          <button type="button"
+                  data-action="modal#close"
+                  class="px-3 py-2 bg-gray-600 hover:bg-gray-500 rounded">
+            Cancel
+          </button>
+
+          <%= f.submit "Save",
+            class: "px-3 py-2 bg-blue-600 hover:bg-blue-500 rounded" %>
+        </div>
+      <% end %>
+    </div>
+  </div>
+</turbo-frame>
+
